@@ -38,7 +38,7 @@
     <div id="houseMsg"></div>
     <h3>Create your household</h3>
     <div class="field"><label>Your display name</label><input id="createName" value="Anna"></div>
-    <div class="field"><label>Household name</label><input id="houseName" value="Our Household"></div>
+    <div class="field"><label>Household name</label><input id="houseName" value="Malama Journey"></div>
     <button class="btn" id="createHouse">Create household</button>
   </div>
   <div class="card" style="margin-top:12px">
@@ -103,22 +103,28 @@ function showHousehold(){$('authView').classList.add('hide');$('householdView').
 async function showApp(){$('authView').classList.add('hide');$('householdView').classList.add('hide');$('appView').classList.remove('hide');$('nav').classList.remove('hide');await refreshAll();subscribeRealtime()}
 $('authToggle').onclick=()=>{authMode=authMode==='signin'?'signup':'signin';$('authTitle').textContent=authMode==='signin'?'Sign in':'Create account';$('authSubmit').textContent=authMode==='signin'?'Sign in':'Create account';$('authToggle').textContent=authMode==='signin'?'Create an account':'I already have an account';msg($('authMsg'),'')};
 $('authSubmit').onclick=async()=>{const email=$('authEmail').value.trim(),password=$('authPassword').value;if(!email||password.length<6){msg($('authMsg'),'Enter a valid email and a password with at least 6 characters.');return}msg($('authMsg'),'');if(authMode==='signup'){const {data:r,error}=await sb.auth.signUp({email,password});if(error){msg($('authMsg'),error.message);return}if(!r.session){msg($('authMsg'),'Account created. Check your email for the confirmation link, then return here and sign in.','success');authMode='signin';$('authSubmit').textContent='Sign in';$('authTitle').textContent='Sign in';return}currentUser=r.user;await loadHousehold()}else{const {data:r,error}=await sb.auth.signInWithPassword({email,password});if(error){msg($('authMsg'),error.message);return}currentUser=r.user;await loadHousehold()}};
-async function loadHousehold(){const {data:m,error}=await sb.from('household_members').select('household_id,display_name,role').eq('user_id',currentUser.id).limit(1);if(error){console.error(error);showHousehold();return}if(!m||!m.length){showHousehold();return}const hid=m[0].household_id;const {data:h,error:he}=await sb.from('households').select('*').eq('id',hid).single();if(he){msg($('houseMsg'),he.message);showHousehold();return}currentHousehold=h;await showApp()}
+async function loadHousehold(){
+ const {data:r,error}=await sb.rpc('get_my_household');
+ if(error){console.error(error);msg($('houseMsg'),error.message);showHousehold();return}
+ const row=Array.isArray(r)?r[0]:r;
+ if(!row){showHousehold();return}
+ currentHousehold={id:row.household_id,name:row.household_name,invite_code:row.invite_code};
+ await showApp()
+}
 $('createHouse').onclick=async()=>{
-  const btn=$('createHouse');
-  if(btn.disabled)return;
-  btn.disabled=true;btn.textContent='Creating…';msg($('houseMsg'),'');
-  try{
-    const {data:hid,error}=await sb.rpc('create_household',{household_name:$('houseName').value.trim()||'Our Household',member_name:$('createName').value.trim()||'Anna'});
-    if(error){msg($('houseMsg'),error.message);return}
-    if(!hid){msg($('houseMsg'),'Household was created but no household ID was returned. Please refresh the app.');return}
-    const {data:h,error:he}=await sb.from('households').select('*').eq('id',hid).single();
-    if(he){msg($('houseMsg'),'Household created. Refreshing…','success');await loadHousehold();return}
-    currentHousehold=h;
-    await showApp();
-  }finally{btn.disabled=false;btn.textContent='Create household'}
+ const btn=$('createHouse'); if(btn.disabled)return; btn.disabled=true; btn.textContent='Checking...'; msg($('houseMsg'),'');
+ try{
+  const {data:existing,error:lookupError}=await sb.rpc('get_my_household');
+  if(lookupError){msg($('houseMsg'),lookupError.message);return}
+  const row=Array.isArray(existing)?existing[0]:existing;
+  if(row){currentHousehold={id:row.household_id,name:row.household_name,invite_code:row.invite_code};await showApp();return}
+  btn.textContent='Creating...';
+  const {error}=await sb.rpc('create_household',{household_name:$('houseName').value.trim()||'Malama Journey',member_name:$('createName').value.trim()||'Anna'});
+  if(error){msg($('houseMsg'),error.message);return}
+  await loadHousehold();
+ }finally{btn.disabled=false;btn.textContent='Create household'}
 };
-$('joinHouse').onclick=async()=>{msg($('houseMsg'),'');const code=$('joinCode').value.trim();if(!code){msg($('houseMsg'),'Enter the household invite code.');return}const {error}=await sb.rpc('join_household',{household_invite_code:code,member_name:$('joinName').value.trim()||'Member'});if(error){msg($('houseMsg'),error.message);return}await loadHousehold()};
+$('joinHouse').onclick=async()=>{const btn=$('joinHouse');if(btn.disabled)return;msg($('houseMsg'),'');const code=$('joinCode').value.trim();if(!code){msg($('houseMsg'),'Enter the household invite code.');return}btn.disabled=true;btn.textContent='Joining...';try{const {error}=await sb.rpc('join_household',{household_invite_code:code,member_name:$('joinName').value.trim()||'Member'});if(error){msg($('houseMsg'),error.message);return}await loadHousehold()}finally{btn.disabled=false;btn.textContent='Join household'}};
 $('signOutSetup').onclick=async()=>{await sb.auth.signOut();location.reload()};$('signOut').onclick=async()=>{await sb.auth.signOut();location.reload()};
 async function refreshAll(){if(!currentHousehold)return;const hid=currentHousehold.id;const [tx,g,m,p,i,d,b,mem]=await Promise.all([
  sb.from('transactions').select('*').eq('household_id',hid).order('transaction_date',{ascending:false}).order('created_at',{ascending:false}),
