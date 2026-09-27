@@ -70,7 +70,7 @@
     <div class="section-title">Stocks / Investments</div><button class="pill" onclick="openModal('investmentModal')">+ Investment</button><div class="card" id="investmentList" style="margin-top:10px"></div>
   </section>
 
-  <section id="debts" class="screen"><div class="top"><div class="title">Debts & Cards</div><button class="pill" onclick="openModal('debtModal')">+ Add</button></div><div class="card red" style="margin-top:16px"><div class="eyebrow">Total balance</div><div style="font-size:28px;font-weight:900" id="debtPageTotal">₱0</div></div><div class="card" id="debtList" style="margin-top:12px"></div><div class="card" style="margin-top:12px"><div class="eyebrow">Credit-card statement scanner</div><div class="sub">Coming next: upload a screenshot, review detected purchases, then import without double-counting card payments.</div></div></section>
+  <section id="debts" class="screen"><div class="top"><div class="title">Debts & Cards</div><button class="pill" onclick="openModal('debtModal')">+ Add</button></div><div class="card red" style="margin-top:16px"><div class="eyebrow">Total balance</div><div style="font-size:28px;font-weight:900" id="debtPageTotal">₱0</div></div><div class="card" id="debtList" style="margin-top:12px"></div><div class="card" style="margin-top:12px"><div class="top"><div><div class="eyebrow">Credit-card statement scanner</div><b>Import purchases from a statement</b><div class="sub">Upload screenshots/photos or a text-based PDF. Mālama extracts likely purchases, lets you review every row, and skips likely card payments/credits by default.</div></div><div class="ico">📸</div></div><button class="btn ghost" style="margin-top:12px" onclick="openStatementScanner()">Upload statement</button><div class="small" style="margin-top:8px">Processed on this device. The statement file itself is not stored in Supabase.</div></div></section>
 
 
   <section id="reports" class="screen"><div class="top"><div><div class="eyebrow">See where you stand each month</div><div class="title">Monthly Reports</div></div><button class="pill" onclick="nav('home')">Home</button></div><div class="report-month"><button class="pill" onclick="shiftReportMonth(-1)">‹</button><input id="reportMonth" type="month"><button class="pill" onclick="shiftReportMonth(1)">›</button></div><div class="report-tabs"><button class="pill active" data-scope="Anna" onclick="setReportScope('Anna')">Anna</button><button class="pill" data-scope="Husband" onclick="setReportScope('Husband')">Husband</button><button class="pill" data-scope="Joint" onclick="setReportScope('Joint')">Joint</button></div><div id="reportContent"><div class="card empty">Choose a month to view your report.</div></div></section>
@@ -86,8 +86,22 @@
 <div class="modal" id="propertyModal"><div class="sheet"><h3 id="propertyModalTitle">Add property</h3><input id="propEditId" type="hidden"><div class="field"><label>Property name</label><input id="propName" placeholder="Kasara Studio"></div><div class="field"><label>Location</label><input id="propLocation" placeholder="Pasig City"></div><div class="field"><label>Type</label><select id="propType"><option>Condo</option><option>House & Lot</option><option>Land</option><option>Rental Unit</option><option>Other</option></select></div><div class="field"><label>Ownership</label><select id="propOwner"><option>Shared</option><option>Anna</option><option>Husband</option></select></div><div class="field"><label>Status</label><select id="propStatus"><option>RFO</option><option>Pre-selling</option><option>Rented</option><option>Vacant</option><option>Personal Use</option></select></div><div class="field"><label>Purchase price</label><input id="propPurchase" type="number" step="0.01"></div><div class="field"><label>Current estimated value</label><input id="propValue" type="number" step="0.01"></div><div class="field"><label>Outstanding loan</label><input id="propLoan" type="number" step="0.01"></div><div class="field"><label>Monthly payment</label><input id="propPayment" type="number" step="0.01"></div><div class="field"><label>Payment due day</label><input id="propDue" type="number" min="1" max="31" placeholder="15"></div><div class="field"><label>Pay by / cutoff time</label><input id="propCutoff" type="time"></div><div class="field"><label>Rental income</label><input id="propRent" type="number" step="0.01"></div><button class="btn" id="saveProperty">Save property</button><button class="btn ghost" onclick="closeModal('propertyModal')">Cancel</button></div></div>
 <div class="modal" id="investmentModal"><div class="sheet"><h3>Add investment</h3><div class="field"><label>Name</label><input id="invName" placeholder="Stock Fund"></div><div class="field"><label>Ticker / symbol (optional)</label><input id="invSymbol" placeholder="VOO, FMETF..."></div><div class="field"><label>Total contributed</label><input id="invContribution" type="number" step="0.01"></div><div class="field"><label>Current value</label><input id="invValue" type="number" step="0.01"></div><div class="field"><label>Owner</label><select id="invOwner"><option>Shared</option><option>Anna</option><option>Husband</option></select></div><button class="btn" id="saveInvestment">Save investment</button><button class="btn ghost" onclick="closeModal('investmentModal')">Cancel</button></div></div>
 <div class="modal" id="debtModal"><div class="sheet"><h3 id="debtModalTitle">Add debt or credit card</h3><input id="debtEditId" type="hidden"><div class="field"><label>Name</label><input id="debtName" placeholder="BPI Credit Card"></div><div class="field"><label>Type</label><select id="debtType"><option>Credit Card</option><option>Personal Loan</option><option>Mortgage</option><option>Auto Loan</option><option>Installment</option><option>Other</option></select></div><div class="field"><label>Current balance</label><input id="debtBalance" type="number" step="0.01"></div><div class="field"><label>Monthly payment / minimum due</label><input id="debtPayment" type="number" step="0.01"></div><div class="field"><label>Due day</label><input id="debtDue" type="number" min="1" max="31"></div><div class="field"><label>Pay by / cutoff time</label><input id="debtCutoff" type="time"></div><div class="field"><label>Statement day (credit cards)</label><input id="debtStatement" type="number" min="1" max="31"></div><div class="field"><label>Credit limit (credit cards)</label><input id="debtLimit" type="number" step="0.01"></div><div class="field"><label>Interest rate % (optional)</label><input id="debtRate" type="number" step="0.01"></div><div class="field"><label>Reminder</label><select id="debtReminderDays"><option value="1">1 day before</option><option value="2">2 days before</option><option value="3" selected>3 days before</option><option value="5">5 days before</option><option value="7">7 days before</option></select></div><div class="field"><label><input id="debtReminderEnabled" type="checkbox" checked style="width:auto"> Enable deadline reminders</label></div><div class="field"><label>Ownership</label><select id="debtOwner"><option>Shared</option><option>Anna</option><option>Husband</option></select></div><button class="btn" id="saveDebt">Save debt</button><button class="btn ghost" onclick="closeModal('debtModal')">Cancel</button></div></div>
+<div class="modal" id="statementModal"><div class="sheet"><h3>Scan credit-card statement</h3>
+<div id="statementMsg"></div>
+<div class="field"><label>Credit card</label><select id="statementCard"></select></div>
+<div class="field"><label>Statement year (used when the statement only shows month/day)</label><input id="statementYear" type="number" min="2000" max="2100"></div>
+<div class="field"><label>Default owner</label><select id="statementPerson"><option>Shared</option><option>Anna</option><option>Husband</option></select></div>
+<div class="field"><label>Statement file</label><input id="statementFiles" type="file" accept="image/*,.pdf,application/pdf" multiple></div>
+<button class="btn" id="scanStatement">Scan statement</button>
+<div class="small" id="statementStatus" style="margin-top:8px"></div>
+<div id="statementReview" style="margin-top:12px"></div>
+<button class="btn hide" id="importStatement">Import selected purchases</button>
+<button class="btn ghost" onclick="closeStatementScanner()">Close</button>
+</div></div>
 <div class="modal" id="budgetModal"><div class="sheet"><h3>Add monthly budget</h3><div class="field"><label>Category</label><input id="budgetCategory" placeholder="Fun Money"></div><div class="field"><label>Monthly limit</label><input id="budgetLimit" type="number" step="0.01"></div><div class="field"><label>Owner</label><select id="budgetOwner"><option>Shared</option><option>Anna</option><option>Husband</option></select></div><button class="btn" id="saveBudget">Save budget</button><button class="btn ghost" onclick="closeModal('budgetModal')">Cancel</button></div></div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL='https://mkefkbrffsxumhrmgllq.supabase.co';
@@ -96,6 +110,7 @@ const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSe
 const $=id=>document.getElementById(id); const peso=n=>'₱'+Number(n||0).toLocaleString('en-PH',{maximumFractionDigits:2});
 const esc=s=>String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
 let currentUser=null,currentHousehold=null,members=[];let data={transactions:[],goals:[],movements:[],properties:[],investments:[],debts:[],budgets:[]};let authMode='signin';
+let statementRows=[];
 function msg(el,text,type='error'){el.innerHTML=text?`<div class="${type}">${esc(text)}</div>`:''}
 function openModal(id){$(id).classList.add('show')}function closeModal(id){$(id).classList.remove('show')}window.openModal=openModal;window.closeModal=closeModal;
 function nav(screen){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));$(screen).classList.add('active');document.querySelectorAll('#nav button[data-screen]').forEach(x=>x.classList.toggle('active',x.dataset.screen===screen));if(screen==='more')renderMore();if(screen==='reports')renderReport()}window.nav=nav;
@@ -150,6 +165,101 @@ function renderGoals(){const total=data.goals.reduce((s,g)=>s+goalBalance(g),0);
 function renderGrow(){const propValue=data.properties.reduce((s,p)=>s+Number(p.current_value||0),0),propLoan=data.properties.reduce((s,p)=>s+Number(p.loan_balance||0),0),inv=data.investments.reduce((s,i)=>s+Number(i.current_value||0),0);$('propertyList').innerHTML=data.properties.length?data.properties.map(p=>`<div class="item"><div style="width:100%"><div class="left"><div><b>${esc(p.name)}</b><div class="small">${esc(p.property_type||'Property')} • ${esc(p.ownership)} • ${esc(p.status||'')}</div><div class="small">Equity ${peso(Number(p.current_value||0)-Number(p.loan_balance||0))}${Number(p.rental_income||0)?` • Rent ${peso(p.rental_income)}/mo`:''}</div>${p.payment_due_day?`<div class="due">Payment due day ${p.payment_due_day}${p.payment_cutoff_time?` • Pay by ${formatTime(p.payment_cutoff_time)}`:''}</div>`:''}</div><div class="amount">${peso(p.current_value)}</div></div><div class="mini-actions"><button onclick="editProperty('${p.id}')">Edit</button><button class="danger" onclick="deleteProperty('${p.id}')">Delete</button></div></div></div>`).join(''):'<div class="empty">No properties yet.</div>';$('investmentList').innerHTML=data.investments.length?data.investments.map(i=>`<div class="item"><div><b>${esc(i.name)}</b><div class="small">${esc(i.symbol||i.investment_type||'Investment')} • ${esc(i.ownership)}</div><div class="small">Contributed ${peso(i.total_contributions)}</div></div><div class="amount">${peso(i.current_value)}</div></div>`).join(''):'<div class="empty">No investments yet.</div>'}
 function formatTime(t){if(!t)return'';const [h,m]=String(t).split(':');let hr=Number(h),ampm=hr>=12?'PM':'AM';hr=hr%12||12;return `${hr}:${m||'00'} ${ampm}`}
 function renderDebts(){const total=data.debts.reduce((s,d)=>s+Number(d.current_balance||0),0);$('debtPageTotal').textContent=peso(total);$('debtList').innerHTML=data.debts.length?data.debts.map(d=>`<div class="item"><div style="width:100%"><div class="left"><div><b>${esc(d.name)}</b><div class="small">${esc(d.debt_type||'Debt')} • ${esc(d.ownership||'Shared')}</div><div class="small">${peso(d.monthly_payment||0)}/month${d.due_day?` • due day ${d.due_day}`:''}</div>${d.payment_cutoff_time?`<div class="due">Pay by ${formatTime(d.payment_cutoff_time)}</div>`:''}${d.statement_date?`<div class="due">Statement day ${d.statement_date}${Number(d.credit_limit||0)?` • Limit ${peso(d.credit_limit)}`:''}</div>`:''}</div><div class="amount neg">-${peso(d.current_balance)}</div></div><div class="mini-actions"><button onclick="editDebt('${d.id}')">Edit</button><button class="danger" onclick="deleteDebt('${d.id}')">Delete</button></div></div></div>`).join(''):'<div class="empty">No debts yet.</div>'}
+
+function statementCards(){
+  return data.debts.filter(d=>String(d.debt_type||'').toLowerCase().includes('credit'));
+}
+window.openStatementScanner=()=>{
+  const cards=statementCards();
+  if(!cards.length){alert('Add at least one Credit Card under Debts & Cards first.');return}
+  $('statementCard').innerHTML=cards.map(d=>'<option value="'+esc(d.id)+'">'+esc(d.name)+'</option>').join('');
+  $('statementYear').value=new Date().getFullYear();
+  $('statementFiles').value='';
+  $('statementStatus').textContent='';
+  $('statementReview').innerHTML='';
+  $('importStatement').classList.add('hide');
+  statementRows=[];
+  msg($('statementMsg'),'');
+  openModal('statementModal');
+};
+window.closeStatementScanner=()=>{statementRows=[];closeModal('statementModal')};
+
+function statementCategory(desc){
+  const s=String(desc||'').toUpperCase();
+  if(/GROCERY|SUPERMARKET|PUREGOLD|ROBINSONS SUPERMARKET|LANDERS|S&R|WALTERMART/.test(s))return 'Food & Groceries';
+  if(/RESTAURANT|CAFE|COFFEE|JOLLIBEE|MCDO|MCDONALD|STARBUCKS|FOODPANDA|GRABFOOD/.test(s))return 'Dining Out';
+  if(/AIRLINE|CEBU PACIFIC|PHILIPPINE AIR|AIRASIA|HOTEL|AGODA|BOOKING\.COM|TRAVEL/.test(s))return 'Travel';
+  if(/GRAB|ANGKAS|MOVE IT|GAS|SHELL|PETRON|CALTEX|PARKING|TOLL/.test(s))return 'Transportation';
+  if(/MERCURY|WATSONS|HOSPITAL|CLINIC|DENTAL|PHARMACY|MEDICAL/.test(s))return 'Health & Wellness';
+  if(/MERALCO|MAYNILAD|MANILA WATER|PLDT|GLOBE|SMART|CONVERGE|ELECTRIC|WATER BILL|INTERNET/.test(s))return 'Utilities';
+  if(/SHOPEE|LAZADA|UNIQLO|ZARA|H&M|SM STORE|DEPARTMENT STORE/.test(s))return 'Shopping';
+  if(/TITHE/.test(s))return 'Tithes';
+  if(/DONATION|CHARITY/.test(s))return 'Donations';
+  return 'Other';
+}
+function statementLikelyCredit(desc){
+  return /PAYMENT|PAYMENT RECEIVED|THANK YOU|CREDIT ADJUSTMENT|REFUND|REVERSAL|CASHBACK|REBATE|ANNUAL FEE REVERSAL/i.test(desc||'');
+}
+function statementFingerprint(cardId,date,desc,amount){
+  const src=[cardId,date,String(desc||'').trim().toUpperCase().replace(/\s+/g,' '),Number(amount).toFixed(2)].join('|');
+  let h=2166136261;
+  for(let i=0;i<src.length;i++){h^=src.charCodeAt(i);h=Math.imul(h,16777619)}
+  return 'stmt:'+((h>>>0).toString(16).padStart(8,'0'));
+}
+function parseStatementDate(line,year){
+  const mon={JAN:1,FEB:2,MAR:3,APR:4,MAY:5,JUN:6,JUL:7,AUG:8,SEP:9,OCT:10,NOV:11,DEC:12};
+  let m=line.match(/\b(\d{1,2})[\/\-](\d{1,2})(?:[\/\-](\d{2,4}))?\b/);
+  if(m){let y=m[3]?Number(m[3]):Number(year);if(y<100)y+=2000;const mm=Number(m[1]),dd=Number(m[2]);if(mm>=1&&mm<=12&&dd>=1&&dd<=31)return {text:m[0],date:y+'-'+String(mm).padStart(2,'0')+'-'+String(dd).padStart(2,'0')}}
+  m=line.match(/\b(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)[A-Z]*\s+(\d{1,2})(?:,?\s+(\d{2,4}))?\b/i);
+  if(m){let y=m[3]?Number(m[3]):Number(year);if(y<100)y+=2000;const mm=mon[m[1].slice(0,3).toUpperCase()],dd=Number(m[2]);return {text:m[0],date:y+'-'+String(mm).padStart(2,'0')+'-'+String(dd).padStart(2,'0')}}
+  m=line.match(/\b(\d{1,2})\s+(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)[A-Z]*(?:\s+(\d{2,4}))?\b/i);
+  if(m){let y=m[3]?Number(m[3]):Number(year);if(y<100)y+=2000;const mm=mon[m[2].slice(0,3).toUpperCase()],dd=Number(m[1]);return {text:m[0],date:y+'-'+String(mm).padStart(2,'0')+'-'+String(dd).padStart(2,'0')}}
+  return null;
+}
+function parseStatementText(text,year){
+  const rows=[];const lines=String(text||'').split(/\r?\n/).map(x=>x.replace(/\s+/g,' ').trim()).filter(Boolean);
+  for(const line of lines){
+    const dt=parseStatementDate(line,year);if(!dt)continue;
+    const amountMatches=[...line.matchAll(/(?:PHP|₱)?\s*\(?-?\d{1,3}(?:,\d{3})*\.\d{2}\)?/gi)];if(!amountMatches.length)continue;
+    const am=amountMatches[amountMatches.length-1];let amountText=am[0].replace(/PHP|₱|\s|,/gi,'');const neg=/^-|\(/.test(am[0]);amountText=amountText.replace(/[()]/g,'');
+    const amount=Math.abs(Number(amountText));if(!amount||!Number.isFinite(amount))continue;
+    let desc=line.replace(dt.text,' ').replace(am[0],' ').replace(/\s+/g,' ').trim();if(desc.length<2)desc='Statement purchase';
+    const credit=statementLikelyCredit(desc)||neg;
+    rows.push({include:!credit,date:dt.date,description:desc.slice(0,140),amount,person:$('statementPerson').value,category:statementCategory(desc),credit,installment:/INSTALLMENT|INSTALMENT|AMORT|\b\d{1,2}\s*\/\s*\d{1,2}\b/i.test(desc)});
+  }
+  const seen=new Set();return rows.filter(r=>{const k=[r.date,r.description.toUpperCase(),r.amount.toFixed(2)].join('|');if(seen.has(k))return false;seen.add(k);return true});
+}
+async function textFromPdf(file){
+  if(!window.pdfjsLib)throw new Error('PDF reader failed to load. Please refresh and try again.');
+  pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  const bytes=new Uint8Array(await file.arrayBuffer());const pdf=await pdfjsLib.getDocument({data:bytes}).promise;const out=[];
+  for(let p=1;p<=pdf.numPages;p++){$('statementStatus').textContent='Reading PDF page '+p+' of '+pdf.numPages+'…';const page=await pdf.getPage(p);const tc=await page.getTextContent();const groups={};for(const it of tc.items){const y=Math.round(it.transform[5]/3)*3;(groups[y]||(groups[y]=[])).push({x:it.transform[4],s:it.str})}Object.keys(groups).sort((a,b)=>Number(b)-Number(a)).forEach(y=>out.push(groups[y].sort((a,b)=>a.x-b.x).map(i=>i.s).join(' ')))}
+  return out.join('\n');
+}
+async function textFromImage(file){
+  if(!window.Tesseract)throw new Error('Image reader failed to load. Please refresh and try again.');
+  const result=await Tesseract.recognize(file,'eng',{logger:m=>{if(m.status)$('statementStatus').textContent=m.status+(m.progress!=null?' '+Math.round(m.progress*100)+'%':'')}});return result.data.text||'';
+}
+function scannerCategories(selected){const cats=['Food & Groceries','Dining Out','Utilities','Transportation','Shopping','Health & Wellness','Fun Money','Travel','Tithes','Donations','Other'];return cats.map(x=>'<option'+(x===selected?' selected':'')+'>'+x+'</option>').join('')}
+function renderStatementReview(){
+  if(!statementRows.length){$('statementReview').innerHTML='<div class="card empty">No transaction rows detected. Try a clearer screenshot or a text-based PDF.</div>';$('importStatement').classList.add('hide');return}
+  const purchases=statementRows.filter(r=>!r.credit).length,skipped=statementRows.filter(r=>r.credit).length;
+  let head='<div class="small" style="margin-bottom:8px">Detected '+purchases+' likely purchase'+(purchases===1?'':'s')+(skipped?' and '+skipped+' likely payment/credit row'+(skipped===1?'':'s')+' left unchecked.':'')+'</div>';
+  $('statementReview').innerHTML=head+statementRows.map((r,i)=>'<div class="card" style="margin-top:8px;padding:12px"><div class="top"><label style="font-size:13px"><input type="checkbox" data-scan="include" data-i="'+i+'" '+(r.include?'checked':'')+'> Import</label><span class="tag">'+(r.credit?'Payment/Credit':r.installment?'Installment':'Purchase')+'</span></div><div class="field"><label>Date</label><input type="date" data-scan="date" data-i="'+i+'" value="'+esc(r.date)+'"></div><div class="field"><label>Description</label><input data-scan="description" data-i="'+i+'" value="'+esc(r.description)+'"></div><div class="grid2"><div class="field"><label>Amount</label><input type="number" step="0.01" data-scan="amount" data-i="'+i+'" value="'+r.amount+'"></div><div class="field"><label>Person</label><select data-scan="person" data-i="'+i+'"><option'+(r.person==='Shared'?' selected':'')+'>Shared</option><option'+(r.person==='Anna'?' selected':'')+'>Anna</option><option'+(r.person==='Husband'?' selected':'')+'>Husband</option></select></div></div><div class="field"><label>Category</label><select data-scan="category" data-i="'+i+'">'+scannerCategories(r.category)+'</select></div></div>').join('');
+  $('statementReview').querySelectorAll('[data-scan]').forEach(el=>el.addEventListener('change',()=>{const i=Number(el.dataset.i),k=el.dataset.scan;statementRows[i][k]=k==='include'?el.checked:k==='amount'?Number(el.value):el.value}));$('importStatement').classList.remove('hide');
+}
+$('scanStatement').onclick=async()=>{
+  const files=[...$('statementFiles').files];if(!files.length)return msg($('statementMsg'),'Choose at least one screenshot/photo or PDF.');if(!$('statementCard').value)return msg($('statementMsg'),'Choose a credit card.');
+  $('scanStatement').disabled=true;$('importStatement').classList.add('hide');statementRows=[];msg($('statementMsg'),'');
+  try{for(let i=0;i<files.length;i++){const f=files[i];$('statementStatus').textContent='Reading '+(i+1)+' of '+files.length+': '+f.name;const text=(f.type==='application/pdf'||f.name.toLowerCase().endsWith('.pdf'))?await textFromPdf(f):await textFromImage(f);statementRows.push(...parseStatementText(text,$('statementYear').value||new Date().getFullYear()))}const seen=new Set();statementRows=statementRows.filter(r=>{const k=[r.date,r.description.toUpperCase(),r.amount.toFixed(2)].join('|');if(seen.has(k))return false;seen.add(k);return true});$('statementStatus').textContent=statementRows.length?'Review the detected rows before importing.':'No purchase rows were detected.';renderStatementReview()}catch(e){console.error(e);msg($('statementMsg'),e.message||'Could not read this statement.')}finally{$('scanStatement').disabled=false}
+};
+$('importStatement').onclick=async()=>{
+  const card=data.debts.find(d=>d.id===$('statementCard').value);if(!card)return alert('Credit card not found.');const chosen=statementRows.filter(r=>r.include&&r.amount>0&&r.date&&r.description.trim());if(!chosen.length)return alert('Select at least one purchase to import.');
+  const refs=chosen.map(r=>statementFingerprint(card.id,r.date,r.description,r.amount));const {data:existing,error:checkErr}=await sb.from('transactions').select('external_reference').eq('household_id',currentHousehold.id).in('external_reference',refs);if(checkErr)return alert(checkErr.message);const existingSet=new Set((existing||[]).map(x=>x.external_reference));
+  const payload=chosen.map((r,i)=>({household_id:currentHousehold.id,created_by:currentUser.id,transaction_type:'expense',description:r.description.trim(),category:r.category,person:r.person,amount:Number(r.amount),transaction_date:r.date,payment_method:'Credit Card',account_name:card.name,source:'statement_upload',external_reference:refs[i],notes:r.installment?'Imported from statement scanner; possible installment':'Imported from statement scanner'})).filter(x=>!existingSet.has(x.external_reference));
+  if(!payload.length)return alert('All selected purchases appear to have already been imported.');$('importStatement').disabled=true;$('importStatement').textContent='Importing…';const {error}=await sb.from('transactions').insert(payload);$('importStatement').disabled=false;$('importStatement').textContent='Import selected purchases';if(error)return alert(error.message);const skipped=chosen.length-payload.length;alert('Imported '+payload.length+' purchase'+(payload.length===1?'':'s')+(skipped?'; skipped '+skipped+' duplicate'+(skipped===1?'':'s'):'')+'.');closeStatementScanner();await refreshAll();
+};
+
 function renderMore(){$('inviteCode').textContent=currentHousehold?.invite_code||'—';$('memberText').textContent=members.length?members.map(m=>m.display_name||'Member').join(' • '):'';renderBudgets()}
 function renderAll(){renderHome();renderTransactions();renderGoals();renderGrow();renderDebts();renderMore();renderDueAlerts();checkCardReminders()}
 window.openContribution=id=>{const g=data.goals.find(x=>x.id===id);if(!g)return;$('contribGoal').innerHTML=`<option value="${g.id}">${esc(g.name)}</option>`;openModal('contributeModal')};
