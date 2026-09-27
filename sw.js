@@ -1,4 +1,4 @@
-const CACHE='malama-v3-20260928-1';
+const CACHE='malama-v3-20260928-2';
 const CORE=['./','./index.html','./manifest.json'];
 self.addEventListener('install',e=>{self.skipWaiting();e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)))});
 self.addEventListener('activate',e=>{e.waitUntil(Promise.all([caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))),self.clients.claim()]))});
