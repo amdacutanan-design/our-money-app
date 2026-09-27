@@ -1,16 +1,8 @@
-# Our Money
+# Mālama Journey V3
 
-Free household finance tracker for Anna + Husband.
+This build adds Supabase sign-in, household creation/joining, and shared cloud sync for transactions, savings goals, properties, investments, debts and budgets.
 
-## Publish with GitHub Pages
-1. Upload all files in this folder to the root of the `our-money-app` repository.
-2. In GitHub: Settings -> Pages.
-3. Source: Deploy from a branch.
-4. Branch: `main`, folder: `/ (root)`.
-5. Save and wait for the site URL.
+## Before uploading
+Run `supabase-migration.sql` once in Supabase SQL Editor. It adds the synced budgets table and enables realtime for the app tables.
 
-## iPhone
-Open the GitHub Pages URL in Safari -> Share -> Add to Home Screen.
-
-## Important
-This version stores data on the current device only (localStorage). Use Export Backup to keep a copy.
+Then replace the existing GitHub Pages files with `index.html`, `manifest.json`, and `sw.js`.

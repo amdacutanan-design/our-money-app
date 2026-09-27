@@ -1,13 +1,9 @@
 {
   "name": "Mālama Journey",
-  "short_name": "Mālama Journey",
+  "short_name": "Mālama",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#f7f5f1",
   "theme_color": "#2f9b68",
-  "description": "A free household finance tracker for income, expenses, budgets and debts.",
-  "icons": [
-    {"src":"icon-192.svg","sizes":"192x192","type":"image/svg+xml","purpose":"any"},
-    {"src":"icon-512.svg","sizes":"512x512","type":"image/svg+xml","purpose":"any"}
-  ]
+  "description": "Shared household money, savings, assets, investments and debt tracking."
 }
